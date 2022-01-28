@@ -1,5 +1,17 @@
 const puppeteer = require('puppeteer')
 
+let START_URL='';
+let URL_PARAM='';
+const HANDLER=process.env.HANDLER
+switch(HANDLER){
+    case 'boyner':
+         START_URL ='https://www.boyner.com.tr/kadin-elbise-modelleri-c-100101'
+         URL_PARAM='/?dropListingPageSize=90&orderOption=Editor'
+    case 'lcwaikiki':
+        START_URL ='https://www.lcwaikiki.com/tr-TR/TR/kategori/kadin/elbise-c46'
+        URL_PARAM='?PageIndex='
+    default:
+}
 
 
 
@@ -113,4 +125,60 @@ async function scrapeKoton() {
     }
 }
 
-scrapeDefacto()
+async function scrape() {
+    try {
+
+        const { handler, getUrls } = require( `./${HANDLER}handler`)
+  
+        const browser = await puppeteer.launch({ headless: false })
+        const page = await browser.newPage()
+  
+        await page.goto(START_URL)
+       
+       await handler(page)
+     
+        const promises = []
+        const pageUrls = await getUrls(page,URL_PARAM)
+    debugger;
+        pageUrls.forEach(url => {
+            promises.push((async () => {
+                const page = await browser.newPage()
+                await page.setRequestInterception(true);
+                page.on('request', req => {
+                    const resourceType = req.resourceType();
+                    if (resourceType === 'image') {
+                        req.respond({
+                            status: 200,
+                            contentType: 'image/jpeg',
+                            body: ''
+                        });
+
+
+                    } else {
+                        req.continue();
+                    }
+                });
+                await page.goto(url)
+                return page
+            })())
+
+        })
+
+        const pages = await Promise.all(promises)
+        const handlers =[]
+  
+        for (let page of pages) {
+            handlers.push((async ()=>{
+            return    await handler(page)
+            })())
+          
+        }
+
+        await Promise.all(handlers)
+        debugger;
+    } catch (error) {
+        debugger;
+    }
+}
+
+scrape()
