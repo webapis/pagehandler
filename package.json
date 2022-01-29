@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node main.js",
     "boyner":"set HANDLER=boyner&&node main.js",
-    "lcwaikiki":"set HANDLER=lcwaikiki&&node main.js"
+    "lcwaikiki":"set HANDLER=lcwaikiki&&node main.js",
+    "ipekyol":"set HANDLER=ipekyol&&node main.js"
 
   },
   "keywords": [],
