@@ -18,6 +18,11 @@ switch (HANDLER) {
         URL_PARAM = ''
         debugger;
         break;
+    case 'machka':
+        START_URL = 'https://www.machka.com.tr/elbise-modelleri-c_828'
+        URL_PARAM = ''
+        debugger;
+        break;
     default:
 }
 
@@ -138,33 +143,33 @@ async function scrape() {
 
         const { handler, getUrls } = require(`./${HANDLER}handler`)
 
-        const browser = await puppeteer.launch({ headless: false,timeout:120000 })
+        const browser = await puppeteer.launch({ headless: false, timeout: 120000 })
         const page = await browser.newPage()
-debugger;           
+        debugger;
 
-await page.setRequestInterception(true);
-   page.on('request', req => {
-    const resourceType = req.resourceType();
-    if (resourceType === 'image') {
-        req.respond({
-            status: 200,
-            contentType: 'image/jpeg',
-            body: ''
+        await page.setRequestInterception(true);
+        page.on('request', req => {
+            const resourceType = req.resourceType();
+            if (resourceType === 'image') {
+                req.respond({
+                    status: 200,
+                    contentType: 'image/jpeg',
+                    body: ''
+                });
+
+
+            } else {
+                req.continue();
+            }
         });
-
-
-    } else {
-        req.continue();
-    }
-});
-        await page.goto(START_URL,{timeout:120000})
+        await page.goto(START_URL, { timeout: 120000 })
 
         await handler(page)
 
         const promises = []
         const pageUrls = await getUrls(page, URL_PARAM)
         debugger;
-        pageUrls.length>0 &&  pageUrls.forEach(url => {
+        pageUrls.length > 0 && pageUrls.forEach(url => {
             promises.push((async () => {
                 const page = await browser.newPage()
                 await page.setRequestInterception(true);
@@ -182,7 +187,7 @@ await page.setRequestInterception(true);
                         req.continue();
                     }
                 });
-                await page.goto(url,{timeout:0})
+                await page.goto(url, { timeout: 0 })
                 return page
             })())
 
