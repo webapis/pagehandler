@@ -1,4 +1,4 @@
-async function defactoHandler(page) {
+async function handler(page) {
     
 
     await page.waitForSelector('.catalog-products')
@@ -24,7 +24,8 @@ async function defactoHandler(page) {
                 link: productCard.querySelector('.catalog-products .product-card .product-card__image .image-box a').href,   
                 timestamp: Date.now(),
                  plcHolder:"https://dfcdn.defacto.com.tr/AssetsV2/dist/img/placeholders/placeholder.svg",
-                 discPerc
+                 discPerc,
+              
             }
         }).filter(f => f.imageUrl !== null)
     })
@@ -36,7 +37,7 @@ debugger;
       return data
 }
 
-async function defactoGetUrls(page,url) {
+async function getUrls(page,url) {
     await page.waitForSelector('.catalog__meta--product-count span')
     const productCount = await page.$eval('.catalog__meta--product-count span', element => parseInt(element.innerHTML))
     const totalPages = Math.ceil(productCount / 72)
@@ -53,4 +54,4 @@ async function defactoGetUrls(page,url) {
     }
     return pageUrls
 }
-module.exports = { defactoHandler, defactoGetUrls }
+module.exports = { handler, getUrls }

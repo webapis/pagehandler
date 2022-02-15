@@ -1,10 +1,20 @@
 const puppeteer = require('puppeteer')
-
+const {uploadToMongodb}=require('./uploadToMongodb')
 let START_URL = '';
 let URL_PARAM = '';
-const HANDLER = process.env.HANDLER
+const HANDLER = process.env.MARKA
+
+
 debugger;
 switch (HANDLER) {
+    case 'koton':
+        START_URL = 'https://www.koton.com/tr/kadin/giyim/elbise/c/M01-C02-N01-AK103'
+        URL_PARAM = ''
+        break;
+    case 'defacto':
+        START_URL = 'https://www.defacto.com.tr/en-sevilenler-kadin?page=1'
+        URL_PARAM = 'https://www.defacto.com.tr/en-sevilenler-kadin?page='
+        break;
     case 'boyner':
         START_URL = 'https://www.boyner.com.tr/kadin-elbise-modelleri-c-100101'
         URL_PARAM = '/?dropListingPageSize=90&orderOption=Editor'
@@ -29,120 +39,15 @@ switch (HANDLER) {
 
 
 
-async function scrapeDefacto() {
-    try {
-
-        const { defactoHandler, defactoGetUrls } = require('./defactoHandler')
-        const browser = await puppeteer.launch({ headless: false })
-        const page = await browser.newPage()
-        await page.goto('https://www.defacto.com.tr/en-sevilenler-kadin?page=1')
-
-        await defactoHandler(page)
-        debugger;
-        const promises = []
-        const pageUrls = await defactoGetUrls(page, 'https://www.defacto.com.tr/en-sevilenler-kadin?page=')
-        debugger;
-        pageUrls.forEach(url => {
-            promises.push((async () => {
-                const page = await browser.newPage()
-                await page.setRequestInterception(true);
-                page.on('request', req => {
-                    const resourceType = req.resourceType();
-                    if (resourceType === 'image') {
-                        req.respond({
-                            status: 200,
-                            contentType: 'image/jpeg',
-                            body: ''
-                        });
 
 
-                    } else {
-                        req.continue();
-                    }
-                });
-                await page.goto(url)
-                return page
-            })())
 
-        })
-
-        const pages = await Promise.all(promises)
-        const handlers = []
-
-        for (let page of pages) {
-            handlers.push((async () => {
-                return await defactoHandler(page)
-            })())
-
-        }
-
-        await Promise.all(handlers)
-        debugger;
-    } catch (error) {
-        debugger;
-    }
-}
-
-
-async function scrapeKoton() {
-    try {
-
-        const { kotonHandler, kotonGetUrls } = require('./kotonHanldler')
-        const browser = await puppeteer.launch({ headless: false })
-        const page = await browser.newPage()
-        await page.goto('https://www.koton.com/tr/kadin/giyim/elbise/c/M01-C02-N01-AK103')
-
-        await kotonHandler(page)
-        debugger;
-        const promises = []
-        const pageUrls = await kotonGetUrls(page)
-        debugger;
-        pageUrls.forEach(url => {
-            promises.push((async () => {
-                const page = await browser.newPage()
-                await page.setRequestInterception(true);
-                page.on('request', req => {
-                    const resourceType = req.resourceType();
-                    if (resourceType === 'image') {
-                        req.respond({
-                            status: 200,
-                            contentType: 'image/jpeg',
-                            body: ''
-                        });
-
-
-                    } else {
-                        req.continue();
-                    }
-                });
-                await page.goto(url)
-                return page
-            })())
-
-        })
-
-        const pages = await Promise.all(promises)
-        const handlers = []
-
-        for (let page of pages) {
-            handlers.push((async () => {
-                return await kotonHandler(page)
-            })())
-
-        }
-
-        await Promise.all(handlers)
-        debugger;
-    } catch (error) {
-        debugger;
-    }
-}
 
 async function scrape() {
     try {
 
-        const { handler, getUrls } = require(`./${HANDLER}handler`)
-
+        const { handler, getUrls } = require(`./handlers/${HANDLER}Handler`)
+debugger;
         const browser = await puppeteer.launch({ headless: false, timeout: 120000 })
         const page = await browser.newPage()
         debugger;
@@ -203,7 +108,9 @@ async function scrape() {
 
         }
 
-        await Promise.all(handlers)
+    const datas =    await Promise.all(handlers)
+    const merged =datas.flat()
+   await uploadToMongodb({data:merged,colName:HANDLER})
         debugger;
     } catch (error) {
         debugger;

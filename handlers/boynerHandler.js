@@ -26,7 +26,8 @@ async function handler(page) {
                 plcHolder:"https://statics.boyner.com.tr/assets/images/loading-icon.gif",
                 discPerc,
                 hizliGonderi,
-                kargoBedava
+                kargoBedava,
+              
             }
         }).filter(f => f.imageUrl !== null)
     })

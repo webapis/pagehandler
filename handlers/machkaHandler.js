@@ -1,5 +1,5 @@
 
-const { extractPercentage } = require('./helper')
+const { extractPercentage } = require('../helper')
 async function handler(page) {
     debugger;
     await page.waitForSelector('.ems-prd-list-wrapper')
@@ -35,7 +35,8 @@ async function handler(page) {
                 discPerc,
                 hizliGonderi: null,
                 kargoBedava: null,
-                yeni:null
+                yeni:null,
+  
             }
         }).filter(f => f.imageUrl !== null)
     })

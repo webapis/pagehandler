@@ -6,17 +6,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node main.js",
-    "boyner":"set HANDLER=boyner&&node main.js",
-    "lcwaikiki":"set HANDLER=lcwaikiki&&node main.js",
-    "ipekyol":"set HANDLER=ipekyol&&node main.js",
-    "machka":"set HANDLER=machka&&node main.js"
-
+    "koton": "set MARKA=koton&&node main.js",
+    "defacto": "set MARKA=defacto&&node main.js",
+    "boyner": "set MARKA=boyner&&node main.js",
+    "lcwaikiki": "set MARKA=lcwaikiki&&node main.js",
+    "ipekyol": "set MARKA=ipekyol&&node main.js",
+    "machka": "set MARKA=machka&&node main.js",
+    "atlas": "node atlas.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cloudinary": "^1.28.1",
+    "mongodb": "^4.3.1",
     "puppeteer": "^13.1.1"
   }
 }

@@ -1,5 +1,5 @@
 
-const {extractPercentage}=require('./helper')
+const {extractPercentage}=require('../helper')
 async function handler(page) {
     debugger;
     await page.waitForSelector('.prd-list .prd')
@@ -22,7 +22,8 @@ async function handler(page) {
                     plcHolder:'https://img1-ipekyol.mncdn.com/images/lazyload/placeHolder.gif',
                     discPerc,
                     hizliGonderi:null,
-                    kargoBedava:null
+                    kargoBedava:null,
+    
                 }
         }).filter(f => f.imageUrl !== null)
     })
