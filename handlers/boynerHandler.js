@@ -26,8 +26,7 @@ async function handler(page) {
                 plcHolder:"https://statics.boyner.com.tr/assets/images/loading-icon.gif",
                 discPerc,
                 hizliGonderi,
-                kargoBedava,
-              
+                kargoBedava
             }
         }).filter(f => f.imageUrl !== null)
     })
@@ -39,7 +38,8 @@ async function handler(page) {
       return data
 }
 
-async function getUrls(page,param) {
+async function getUrls(page) {
+    const param='/?dropListingPageSize=90&orderOption=Editor'
     await page.waitForSelector('.red-v1 .grey')
     const firstUrl =await page.url()
     

@@ -1,5 +1,6 @@
+
 async function handler(page) {
-    
+
 
     await page.waitForSelector('.catalog-products')
 
@@ -24,19 +25,17 @@ async function handler(page) {
                 link: productCard.querySelector('.catalog-products .product-card .product-card__image .image-box a').href,   
                 timestamp: Date.now(),
                  plcHolder:"https://dfcdn.defacto.com.tr/AssetsV2/dist/img/placeholders/placeholder.svg",
-                 discPerc,
-              
+                 discPerc
             }
         }).filter(f => f.imageUrl !== null)
     })
 
     console.log('data length_____', data.length)
   
-debugger;
+
 
       return data
 }
-
 async function getUrls(page,url) {
     await page.waitForSelector('.catalog__meta--product-count span')
     const productCount = await page.$eval('.catalog__meta--product-count span', element => parseInt(element.innerHTML))
@@ -54,4 +53,4 @@ async function getUrls(page,url) {
     }
     return pageUrls
 }
-module.exports = { handler, getUrls }
+module.exports={handler,getUrls}
